@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RE;ME</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            color: white;
+        }
+        .header {
+            background-color: #6a3093;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .note {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+        .note:hover {
+            transform: scale(1.05);
+        }
+        .note .delete, .note .edit {
+            float: right;
+            cursor: pointer;
+            margin-left: 10px;
+            color: white;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        .note .delete:hover {
+            color: #ff4d4d;
+        }
+        .note .edit:hover {
+            color: #4dafff;
+        }
+        .add-note {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .add-note input, .add-note textarea, .add-note select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+        .add-note button {
+            background: #6a3093;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        .add-note button:hover {
+            background: #8e44ad;
+        }
+        .filter {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+        .filter select, .filter button {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+        .filter button {
+            background: #6a3093;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .filter button:hover {
+            background: #8e44ad;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Keep Clone</h1>
+    </div>
+    <div class="container">
+        <div class="add-note">
+            <input id="note-title" type="text" placeholder="Title">
+            <textarea id="note-content" rows="4" placeholder="Take a note..."></textarea>
+            <select id="note-status">
+                <option value="Belum Selesai">Belum Selesai</option>
+                <option value="Selesai">Selesai</option>
+            </select>
+            <select id="note-category">
+                <option value="Akademik">Akademik</option>
+                <option value="Non Akademik">Non Akademik</option>
+            </select>
+            <input id="note-date" type="date">
+            <button onclick="addNote()">Add Note</button>
+        </div>
+
+        <div class="filter">
+            <select id="filter-status" onchange="filterNotes()">
+                <option value="">Filter by Status</option>
+                <option value="Belum Selesai">Belum Selesai</option>
+                <option value="Selesai">Selesai</option>
+            </select>
+            <button onclick="sortNotes()">Sort by Date</button>
+        </div>
+
+        <div id="notes"></div>
+    </div>
+
+    <script>
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+        function saveToLocalStorage() {
+            localStorage.setItem('notes', JSON.stringify(notes));
+        }
+
+        function renderNotes(filteredNotes = notes) {
+            const notesContainer = document.getElementById('notes');
+            notesContainer.innerHTML = '';
+            filteredNotes.forEach((note, index) => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note';
+                noteElement.innerHTML = `
+                    <strong>${note.title}</strong>
+                    <span class="delete" onclick="deleteNote(${index})">&times;</span>
+                    <span class="edit" onclick="editNote(${index})">&#9998;</span>
+                    <p>${note.content}</p>
+                    <p><strong>Status:</strong> ${note.status}</p>
+                    <p><strong>Category:</strong> ${note.category}</p>
+                    <p><strong>Date:</strong> ${note.date}</p>
+                `;
+                notesContainer.appendChild(noteElement);
+            });
+        }
+
+        function addNote() {
+            const title = document.getElementById('note-title').value;
+            const content = document.getElementById('note-content').value;
+            const status = document.getElementById('note-status').value;
+            const category = document.getElementById('note-category').value;
+            const date = document.getElementById('note-date').value;
+
+            if (title && content && date) {
+                notes.push({ title, content, status, category, date });
+                saveToLocalStorage();
+                renderNotes();
+                clearInputs();
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        function clearInputs() {
+            document.getElementById('note-title').value = '';
+            document.getElementById('note-content').value = '';
+            document.getElementById('note-status').value = 'Belum Selesai';
+            document.getElementById('note-category').value = 'Akademik';
+            document.getElementById('note-date').value = '';
+        }
+
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            saveToLocalStorage();
+            renderNotes();
+        }
+
+        function editNote(index) {
+            const note = notes[index];
+            document.getElementById('note-title').value = note.title;
+            document.getElementById('note-content').value = note.content;
+            document.getElementById('note-status').value = note.status;
+            document.getElementById('note-category').value = note.category;
+            document.getElementById('note-date').value = note.date;
+
+            deleteNote(index);
+        }
+
+        function filterNotes() {
+            const filterStatus = document.getElementById('filter-status').value;
+            const filteredNotes = filterStatus
+                ? notes.filter(note => note.status === filterStatus)
+                : notes;
+            renderNotes(filteredNotes);
+        }
+
+        function sortNotes() {
+            const sortedNotes = [...notes].sort((a, b) => new Date(a.date) - new Date(b.date));
+            renderNotes(sortedNotes);
+        }
+
+        renderNotes();
+    </script>
+</body>
+</html>
