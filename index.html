@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RE;ME</title>
+    <title>Keep Clone</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -15,32 +15,32 @@
         .header {
             background-color: #6a3093;
             color: white;
-            padding: 20px;
+            padding: 15px 10px;
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         .container {
-            padding: 20px;
-            max-width: 800px;
+            padding: 15px;
+            max-width: 100%;
             margin: 0 auto;
         }
         .note {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
+            padding: 10px;
+            margin: 10px 0;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             transition: transform 0.2s;
         }
         .note:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
         .note .delete, .note .edit {
             float: right;
             cursor: pointer;
-            margin-left: 10px;
+            margin-left: 5px;
             color: white;
             text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         }
@@ -53,16 +53,16 @@
         .add-note {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         .add-note input, .add-note textarea, .add-note select {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 5px;
             background: rgba(0, 0, 0, 0.1);
@@ -75,20 +75,20 @@
             padding: 10px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             transition: background 0.3s;
         }
         .add-note button:hover {
             background: #8e44ad;
         }
         .filter {
-            margin: 20px 0;
+            margin: 15px 0;
             display: flex;
+            flex-direction: column;
             gap: 10px;
-            justify-content: space-between;
         }
         .filter select, .filter button {
-            padding: 10px;
+            padding: 8px;
             border-radius: 5px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(0, 0, 0, 0.1);
@@ -101,6 +101,26 @@
         }
         .filter button:hover {
             background: #8e44ad;
+        }
+
+        /* Media Query untuk tampilan HP */
+        @media screen and (max-width: 480px) {
+            .header {
+                font-size: 18px;
+                padding: 10px;
+            }
+            .note {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .add-note input, .add-note textarea, .add-note select, 
+            .filter select, .filter button {
+                font-size: 14px;
+                padding: 6px;
+            }
+            .add-note button, .filter button {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
